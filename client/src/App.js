@@ -16,7 +16,7 @@ function App() {
             <div className="header-text">
               <h1 className="name">Gautham Madhu</h1>
               <p className="title">Senior Software Engineer</p>
-              <p className="tagline">Full-Stack Development | React | Node.js | Python | Cloud Technologies</p>
+              <p className="tagline">Full-Stack Development | React | Node.js | Python | Cloud Technologies | AWS</p>
             </div>
             <button className="download-btn" onClick={downloadResume}>
               <FaDownload /> Download Resume

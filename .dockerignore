@@ -10,3 +10,4 @@ client/build
 *.log
 .vscode
 .idea
+.md
