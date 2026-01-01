@@ -1,0 +1,92 @@
+name: Deploy to EC2
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allows manual trigger from GitHub UI
+
+jobs:
+  deploy:
+    name: Deploy to EC2
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install backend dependencies
+        run: npm ci
+
+      - name: Install frontend dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Build React frontend
+        run: |
+          cd client
+          npm run build
+
+      - name: Deploy to EC2 via SSH
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # Navigate to project directory
+            cd ~/portfolio || exit 1
+
+            # Pull latest changes
+            git pull origin main
+
+            # Install/update dependencies
+            npm ci
+            cd client && npm ci && cd ..
+
+            # Build frontend
+            cd client && npm run build && cd ..
+
+            # Restart Docker container
+            docker-compose down
+            docker-compose up -d --build
+
+            # Show status
+            docker ps
+            echo "Deployment completed successfully!"
+
+      - name: Verify deployment
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            # Wait for container to be healthy
+            sleep 10
+
+            # Check if container is running
+            if docker ps | grep -q gautham-portfolio; then
+              echo "✅ Container is running"
+            else
+              echo "❌ Container is not running"
+              docker-compose logs
+              exit 1
+            fi
+
+            # Test health endpoint
+            if curl -f http://localhost/api/health; then
+              echo "✅ Application is healthy"
+            else
+              echo "❌ Health check failed"
+              exit 1
+            fi

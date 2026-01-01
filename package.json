@@ -1,0 +1,28 @@
+{
+  "name": "gautham-portfolio",
+  "version": "1.0.0",
+  "description": "Professional portfolio website for Gautham Madhu",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "npm run build:frontend",
+    "build:frontend": "cd client && npm run build"
+  },
+  "keywords": ["portfolio", "resume", "react", "node"],
+  "author": "Gautham Madhu",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "compression": "^1.7.4",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
