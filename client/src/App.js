@@ -3,8 +3,23 @@ import './App.css';
 import { FaEnvelope, FaPhone, FaLinkedin, FaDownload, FaCode, FaServer, FaDatabase, FaCloud, FaBriefcase, FaGraduationCap, FaTrophy } from 'react-icons/fa';
 
 function App() {
-  const downloadResume = () => {
-    window.open('/resume/Gautham_Madhu_Resume (1).pdf', '_blank');
+  const downloadResume = async () => {
+    const backendUrl = '/resume/Gautham_Madhu_Resume (1).pdf';
+    const fallbackUrl = '/Gautham_Madhu_Resume (1).pdf'; // from public folder
+
+    try {
+      // Try the backend URL first
+      const response = await fetch(backendUrl, { method: 'HEAD' });
+      if (response.ok) {
+        window.open(backendUrl, '_blank');
+      } else {
+        // Fallback to public folder
+        window.open(fallbackUrl, '_blank');
+      }
+    } catch (error) {
+      // If backend is not available, use fallback
+      window.open(fallbackUrl, '_blank');
+    }
   };
 
   return (

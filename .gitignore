@@ -39,3 +39,8 @@ coverage/
 # Misc
 *.pem
 .cache/
+
+# Cloudflare
+.wrangler/
+wrangler.toml
+.dev.vars
