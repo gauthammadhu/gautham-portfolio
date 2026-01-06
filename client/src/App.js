@@ -10,15 +10,23 @@ function App() {
     try {
       // Try the backend URL first
       const response = await fetch(backendUrl, { method: 'HEAD' });
-      if (response.ok) {
-        window.open(backendUrl, '_blank');
-      } else {
-        // Fallback to public folder
-        window.open(fallbackUrl, '_blank');
-      }
+      const resumeUrl = response.ok ? backendUrl : fallbackUrl;
+
+      // Create a temporary anchor element to trigger download
+      const link = document.createElement('a');
+      link.href = resumeUrl;
+      link.download = 'Gautham_Madhu_Resume.pdf'; // Filename for download
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     } catch (error) {
       // If backend is not available, use fallback
-      window.open(fallbackUrl, '_blank');
+      const link = document.createElement('a');
+      link.href = fallbackUrl;
+      link.download = 'Gautham_Madhu_Resume.pdf';
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
     }
   };
 
